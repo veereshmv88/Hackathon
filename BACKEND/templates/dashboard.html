@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRIME HEX v8 | Liquid Intelligence AI Shield</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', monospace;
+            background: #050508;
+            color: #00ffcc;
+            overflow-x: hidden;
+        }
+
+        /* Cyber Grid Background */
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -2;
+        }
+
+        /* Liquid Intelligence Animation */
+        .liquid-bg {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(0, 255, 204, 0.08), transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(79, 70, 229, 0.08), transparent 50%);
+            animation: liquidFlow 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes liquidFlow {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.5; }
+            33% { transform: translate(5%, 5%) rotate(2deg); opacity: 0.7; }
+            66% { transform: translate(-5%, -3%) rotate(-1deg); opacity: 0.6; }
+        }
+
+        .hex-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><polygon points="50,5 95,27.5 95,72.5 50,95 5,72.5 5,27.5" fill="none" stroke="%2300ffcc" stroke-width="0.5"/></svg>');
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* GLASSMORPHISM SIDEBAR - PRIME HEX STYLE */
+        .sidebar {
+            width: 300px;
+            background: rgba(5, 5, 8, 0.85);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(0, 255, 204, 0.3);
+            padding: 30px 24px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            transition: all 0.3s;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.3);
+        }
+
+        .prime-hex {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffcc, #4f46e5, #00ffcc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 4px;
+            animation: hexPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes hexPulse {
+            0%, 100% { text-shadow: 0 0 10px rgba(0, 255, 204, 0.3); }
+            50% { text-shadow: 0 0 30px rgba(0, 255, 204, 0.8); }
+        }
+
+        .version {
+            font-size: 10px;
+            color: #00ffcc;
+            opacity: 0.6;
+            letter-spacing: 2px;
+            margin-top: 8px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            color: #8b8ca3;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(0, 255, 204, 0.15), transparent);
+            transition: width 0.3s;
+        }
+
+        .nav-item:hover::before, .nav-item.active::before {
+            width: 100%;
+        }
+
+        .nav-item i {
+            width: 24px;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover i {
+            transform: scale(1.1);
+            color: #00ffcc;
+        }
+
+        .nav-item.active {
+            background: rgba(0, 255, 204, 0.1);
+            border-color: rgba(0, 255, 204, 0.5);
+            color: #00ffcc;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+        }
+
+        .nav-item:hover {
+            color: #00ffcc;
+            border-color: rgba(0, 255, 204, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+        }
+
+        /* Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ffcc, #4f46e5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .page-title p {
+            color: #6b7280;
+            margin-top: 8px;
+            font-size: 14px;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .live-indicator {
+            background: rgba(0, 255, 204, 0.1);
+            padding: 8px 20px;
+            border-radius: 40px;
+            border: 1px solid rgba(0, 255, 204, 0.5);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 12px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ffcc;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 1.5s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0, 255, 204, 0.7); }
+            50% { opacity: 0.5; box-shadow: 0 0 0 8px rgba(0, 255, 204, 0); }
+        }
+
+        /* Stats Cards - Neon Glass */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: rgba(10, 10, 18, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            border-radius: 20px;
+            padding: 24px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 204, 0.05), transparent);
+            transition: left 0.5s;
+        }
+
+        .stat-card:hover::after {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 255, 204, 0.6);
+            box-shadow: 0 8px 32px rgba(0, 255, 204, 0.15);
+        }
+
+        .stat-title {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-bottom: 12px;
+            letter-spacing: 2px;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .stat-value {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ffcc, #fff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* Threat Ribbon */
+        .threat-ribbon {
+            background: rgba(10, 10, 18, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 20px 28px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+        }
+
+        .threat-level {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .level-badge {
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-weight: 800;
+            font-size: 18px;
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 2px;
+        }
+
+        /* Two Columns */
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1.4fr 0.6fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        /* Threat Feed */
+        .threat-feed {
+            background: rgba(10, 10, 18, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            overflow: hidden;
+        }
+
+        .feed-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.2);
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0, 255, 204, 0.03);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .feed-list {
+            max-height: 420px;
+            overflow-y: auto;
+        }
+
+        .feed-item {
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .feed-item:hover {
+            background: rgba(0, 255, 204, 0.05);
+            transform: translateX(5px);
+        }
+
+        .feed-time {
+            font-family: 'Share Tech Mono', monospace;
+            color: #00ffcc;
+            font-size: 12px;
+        }
+
+        .feed-type {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .severity-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* Distribution Card */
+        .distribution-card {
+            background: rgba(10, 10, 18, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            padding: 24px;
+            text-align: center;
+        }
+
+        /* World Map */
+        .world-map {
+            background: rgba(10, 10, 18, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 204, 0.2);
+            padding: 24px;
+        }
+
+        .origin-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 255, 204, 0.1);
+            transition: all 0.3s;
+        }
+
+        .origin-item:hover {
+            padding-left: 12px;
+            color: #00ffcc;
+        }
+
+        @media (max-width: 1000px) {
+            .sidebar { width: 80px; padding: 20px 12px; }
+            .prime-hex { font-size: 24px; }
+            .version, .nav-item span { display: none; }
+            .two-columns { grid-template-columns: 1fr; }
+            .main-content { padding: 20px; }
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #0a0a12; }
+        ::-webkit-scrollbar-thumb { background: #00ffcc; border-radius: 4px; }
+    </style>
+</head>
+<body>
+<div class="cyber-grid"></div>
+<div class="liquid-bg"></div>
+<div class="hex-overlay"></div>
+
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="logo-area">
+            <div class="prime-hex">PRIME HEX</div>
+            <div class="version">CORE_SYSTEM_V8</div>
+        </div>
+        <div class="nav-menu">
+            <a href="/" class="nav-item active"><i class="fas fa-shield-halos"></i><span>DASHBOARD</span></a>
+            <a href="/threat-monitor" class="nav-item"><i class="fas fa-eye"></i><span>THREAT MONITOR</span></a>
+            <a href="/attack-arena" class="nav-item"><i class="fas fa-gamepad"></i><span>ATTACK ARENA</span></a>
+            <a href="/prompt-sandbox" class="nav-item"><i class="fas fa-terminal"></i><span>PROMPT SANDBOX</span></a>
+            <a href="/analytics" class="nav-item"><i class="fas fa-chart-line"></i><span>ANALYTICS</span></a>
+            <a href="/attack-replay" class="nav-item"><i class="fas fa-history"></i><span>ATTACK REPLAY</span></a>
+            <a href="/api-gateway" class="nav-item"><i class="fas fa-plug"></i><span>API GATEWAY</span></a>
+            <a href="/honeypot" class="nav-item"><i class="fas fa-jar"></i><span>HONEYPOT</span></a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="dashboard-header">
+            <div class="page-title">
+                <h1>LIQUID INTELLIGENCE DASHBOARD</h1>
+                <p>NEXUS PROTOCOL v8.0 | REAL-TIME THREAT ORCHESTRATION</p>
+            </div>
+            <div class="live-indicator">
+                <span class="live-dot"></span> LIQUID STREAM ACTIVE
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-title">[ ATTACKS NEUTRALIZED ]</div>
+                <div class="stat-value" id="attacks-blocked">0</div>
+                <div style="font-size: 12px; color: #22c55e; margin-top: 8px;">↑ 23.5% vs baseline</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">[ ACTIVE THREATS ]</div>
+                <div class="stat-value" id="active-threats">0</div>
+                <div style="font-size: 12px; color: #f97316; margin-top: 8px;">↑ 12.4% vs baseline</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">[ SAFE PROMPTS ]</div>
+                <div class="stat-value" id="safe-prompts">0</div>
+                <div style="font-size: 12px; color: #22c55e; margin-top: 8px;">↑ 18.7% vs baseline</div>
+            </div>
+        </div>
+
+        <div class="threat-ribbon">
+            <div class="threat-level">
+                <span style="font-weight: 600;">THREAT STATUS</span>
+                <span class="level-badge" id="threat-level-badge">NOMINAL</span>
+            </div>
+            <div>
+                <span style="font-weight: 600;">RISK SCORE</span>
+                <span id="risk-score" style="font-size: 28px; font-weight: 800; margin-left: 12px;">0</span>
+                <span>/100</span>
+            </div>
+        </div>
+
+        <div class="two-columns">
+            <div class="threat-feed">
+                <div class="feed-header">
+                    <span><i class="fas fa-bolt"></i> LIVE THREAT FEED</span>
+                    <i class="fas fa-sync-alt fa-spin"></i>
+                </div>
+                <div id="threat-feed-list" class="feed-list">
+                    <div style="padding: 40px; text-align: center;">INITIALIZING LIQUID INTELLIGENCE...</div>
+                </div>
+            </div>
+
+            <div class="distribution-card">
+                <h3><i class="fas fa-chart-pie"></i> THREAT DISTRIBUTION</h3>
+                <canvas id="attackDonut" width="200" height="200" style="margin: 20px auto;"></canvas>
+                <div id="legend-container"></div>
+            </div>
+        </div>
+
+        <div class="world-map">
+            <h3><i class="fas fa-globe"></i> ATTACK ORIGINS MATRIX</h3>
+            <div id="origins-list"></div>
+            <div style="margin-top: 20px;">
+                <div style="display: flex; gap: 8px; height: 80px;" id="heatmap"></div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    let donutChart = null;
+    let ws = null;
+
+    function connectWebSocket() {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+
+        ws.onmessage = (event) => {
+            const payload = JSON.parse(event.data);
+            if (payload.type === 'init' || payload.type === 'update') {
+                const stats = payload.type === 'init' ? payload.data.stats : payload.stats;
+                const threats = payload.type === 'init' ? payload.data.threats.threats : payload.all_threats;
+                const origins = payload.type === 'init' ? payload.data.origins.origins : null;
+
+                if (stats) updateStats(stats);
+                if (threats) updateFeed(threats);
+                if (origins) updateOrigins(origins);
+                if (stats?.attack_distribution) updateChart(stats.attack_distribution);
+            }
+        };
+    }
+
+    function updateStats(stats) {
+        document.getElementById('attacks-blocked').innerText = stats.total_attacks_blocked?.toLocaleString() || 0;
+        document.getElementById('active-threats').innerText = stats.active_threats || 0;
+        document.getElementById('safe-prompts').innerText = stats.safe_prompts?.toLocaleString() || 0;
+
+        const badge = document.getElementById('threat-level-badge');
+        badge.innerText = stats.threat_level || 'NOMINAL';
+
+        const colors = { APOCALYPSE: '#ef4444', CRITICAL: '#f97316', ELEVATED: '#eab308', NOMINAL: '#00ffcc' };
+        badge.style.background = colors[stats.threat_level] || '#00ffcc';
+        badge.style.color = '#000';
+
+        document.getElementById('risk-score').innerText = stats.risk_score || 0;
+    }
+
+    function updateFeed(threats) {
+        const container = document.getElementById('threat-feed-list');
+        if (!threats || threats.length === 0) {
+            container.innerHTML = '<div style="padding: 40px; text-align: center;">NO THREATS DETECTED</div>';
+            return;
+        }
+
+        container.innerHTML = threats.slice(0, 8).map(t => `
+            <div class="feed-item">
+                <div>
+                    <div class="feed-time">[${t.time}]</div>
+                    <div class="feed-type">${t.type}</div>
+                    <div style="font-size: 10px; color: #6b7280;">${t.detail}</div>
+                </div>
+                <span class="severity-badge" style="background: ${t.severity === 'CRITICAL' ? '#ef4444' : t.severity === 'HIGH' ? '#f97316' : t.severity === 'MEDIUM' ? '#eab308' : '#22c55e'}">${t.severity}</span>
+            </div>
+        `).join('');
+    }
+
+    function updateChart(distribution) {
+        const ctx = document.getElementById('attackDonut').getContext('2d');
+        if (donutChart) donutChart.destroy();
+
+        donutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(distribution),
+                datasets: [{
+                    data: Object.values(distribution),
+                    backgroundColor: ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6'],
+                    borderWidth: 0,
+                    cutout: '70%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        const colors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6'];
+        document.getElementById('legend-container').innerHTML = Object.entries(distribution).map(([k, v], i) => `
+            <div style="display: flex; justify-content: space-between; margin: 8px 0;">
+                <span><span style="display: inline-block; width: 10px; height: 10px; background: ${colors[i]}; border-radius: 50%; margin-right: 8px;"></span>${k}</span>
+                <span style="font-weight: 700;">${v}%</span>
+            </div>
+        `).join('');
+    }
+
+    function updateOrigins(origins) {
+        const container = document.getElementById('origins-list');
+        container.innerHTML = origins.map(o => `
+            <div class="origin-item">
+                <span><i class="fas fa-network-wired"></i> ${o.node}</span>
+                <span style="font-family: monospace;">${o.hex}</span>
+                <span style="font-weight: 700;">${o.percentage}%</span>
+            </div>
+        `).join('');
+    }
+
+    function updateHeatmap() {
+        const container = document.getElementById('heatmap');
+        container.innerHTML = '';
+        for (let i = 0; i < 24; i++) {
+            const intensity = Math.random() * 100;
+            container.innerHTML += `<div style="flex:1; background: linear-gradient(to top, #00ffcc, #4f46e5); height: ${40 + intensity * 0.6}px; border-radius: 4px; opacity: ${0.3 + intensity / 100};"></div>`;
+        }
+    }
+
+    connectWebSocket();
+    updateHeatmap();
+    setInterval(updateHeatmap, 15000);
+</script>
+</body>
+</html>

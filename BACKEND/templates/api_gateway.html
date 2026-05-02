@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI SHIELD X - API Gateway</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0c12; color: #eef2ff; }
+        
+        .app-container { display: flex; min-height: 100vh; }
+        
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0f111a 0%, #07090f 100%);
+            border-right: 1px solid rgba(79, 70, 229, 0.2);
+            padding: 28px 20px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+        
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .shield-icon { font-size: 32px; color: #4f46e5; }
+        .logo-text h1 { font-size: 20px; background: linear-gradient(135deg, #fff, #a78bfa); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        
+        .nav-menu { display: flex; flex-direction: column; gap: 8px; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: #9ca3af;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .nav-item.active, .nav-item:hover { background: rgba(79, 70, 229, 0.15); color: #a78bfa; }
+        
+        .main-content { flex: 1; padding: 28px 36px; background: #0b0d14; }
+        
+        .api-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .api-card {
+            background: #0f111b;
+            border: 1px solid #22242f;
+            border-radius: 20px;
+            padding: 20px;
+        }
+        
+        .endpoint {
+            background: #1a1c26;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        .get { background: #22c55e; }
+        .post { background: #3b82f6; }
+        .ws { background: #a855f7; }
+        
+        .api-key {
+            background: #1a1c26;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-family: monospace;
+        }
+        
+        button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 1000px) {
+            .sidebar { width: 80px; }
+            .logo-text, .nav-item span { display: none; }
+            .main-content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="logo-area">
+            <i class="fas fa-shield-halos shield-icon"></i>
+            <div class="logo-text"><h1>AI SHIELD X</h1><p>AI DEFENSE SYSTEM</p></div>
+        </div>
+        <div class="nav-menu">
+            <a href="/" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+            <a href="/threat-monitor" class="nav-item"><i class="fas fa-eye"></i><span>Threat Monitor</span></a>
+            <a href="/attack-arena" class="nav-item"><i class="fas fa-gamepad"></i><span>Attack Arena</span></a>
+            <a href="/prompt-sandbox" class="nav-item"><i class="fas fa-terminal"></i><span>Prompt Sandbox</span></a>
+            <a href="/analytics" class="nav-item"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+            <a href="/attack-replay" class="nav-item"><i class="fas fa-history"></i><span>Attack Replay</span></a>
+            <a href="/api-gateway" class="nav-item active"><i class="fas fa-plug"></i><span>API Gateway</span></a>
+            <a href="/honeypot" class="nav-item"><i class="fas fa-jar"></i><span>Honeypot</span></a>
+        </div>
+    </aside>
+    
+    <main class="main-content">
+        <h2>API Gateway</h2>
+        <p>RESTful API endpoints for integration</p>
+        
+        <div class="api-grid">
+            <div class="api-card">
+                <h3><i class="fas fa-chart-line"></i> Dashboard APIs</h3>
+                <div class="endpoint"><span class="method get">GET</span> /api/stats</div>
+                <div class="endpoint"><span class="method get">GET</span> /api/live-threats</div>
+                <div class="endpoint"><span class="method get">GET</span> /api/attack-origins</div>
+            </div>
+            
+            <div class="api-card">
+                <h3><i class="fas fa-shield-alt"></i> Security APIs</h3>
+                <div class="endpoint"><span class="method post">POST</span> /api/prompt-analyze</div>
+                <div class="endpoint"><span class="method post">POST</span> /api/honeypot/trigger</div>
+                <div class="endpoint"><span class="method get">GET</span> /api/honeypot-events</div>
+            </div>
+            
+            <div class="api-card">
+                <h3><i class="fas fa-history"></i> Analytics APIs</h3>
+                <div class="endpoint"><span class="method get">GET</span> /api/attack-history</div>
+                <div class="endpoint"><span class="method get">GET</span> /api/threat-stats</div>
+                <div class="endpoint"><span class="method ws">WS</span> /ws (WebSocket)</div>
+            </div>
+        </div>
+        
+        <div class="api-card" style="margin-top: 20px;">
+            <h3><i class="fas fa-key"></i> API Authentication</h3>
+            <div class="api-key">
+                <strong>API Key:</strong> ai_shield_x_live_2024<br>
+                <strong>Rate Limit:</strong> 1000 requests/minute<br>
+                <strong>Base URL:</strong> http://localhost:8000
+            </div>
+            <button onclick="copyApiKey()"><i class="fas fa-copy"></i> Copy API Key</button>
+            <button onclick="testAPI()"><i class="fas fa-vial"></i> Test Connection</button>
+        </div>
+        
+        <div id="test-result" style="margin-top: 20px;"></div>
+    </main>
+</div>
+
+<script>
+    function copyApiKey() {
+        navigator.clipboard.writeText('ai_shield_x_live_2024');
+        alert('API Key copied to clipboard!');
+    }
+    
+    async function testAPI() {
+        const resultDiv = document.getElementById('test-result');
+        resultDiv.innerHTML = '<p><i class="fas fa-spinner fa-spin"></i> Testing API connection...</p>';
+        
+        try {
+            const response = await fetch('/api/stats');
+            const data = await response.json();
+            resultDiv.innerHTML = `
+                <div style="background: #064e3b; padding: 15px; border-radius: 10px;">
+                    <i class="fas fa-check-circle" style="color: #22c55e;"></i> API Connection Successful!
+                    <br>Response: ${JSON.stringify(data, null, 2)}
+                </div>
+            `;
+        } catch (error) {
+            resultDiv.innerHTML = `<div style="background: #7f1d1d; padding: 15px; border-radius: 10px;">Connection failed: ${error.message}</div>`;
+        }
+    }
+</script>
+</body>
+</html>

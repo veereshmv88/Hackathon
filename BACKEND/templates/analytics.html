@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI SHIELD X - Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0c12; color: #eef2ff; }
+        
+        .app-container { display: flex; min-height: 100vh; }
+        
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #0f111a 0%, #07090f 100%);
+            border-right: 1px solid rgba(79, 70, 229, 0.2);
+            padding: 28px 20px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+        
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .shield-icon { font-size: 32px; color: #4f46e5; }
+        .logo-text h1 { font-size: 20px; background: linear-gradient(135deg, #fff, #a78bfa); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        
+        .nav-menu { display: flex; flex-direction: column; gap: 8px; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: #9ca3af;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .nav-item.active, .nav-item:hover { background: rgba(79, 70, 229, 0.15); color: #a78bfa; }
+        
+        .main-content { flex: 1; padding: 28px 36px; background: #0b0d14; overflow-y: auto; }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .chart-card {
+            background: #0f111b;
+            border: 1px solid #22242f;
+            border-radius: 20px;
+            padding: 20px;
+        }
+        
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-card {
+            background: #0f111b;
+            border: 1px solid #22242f;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+        .summary-value { font-size: 28px; font-weight: 800; margin-top: 10px; }
+        
+        @media (max-width: 1000px) {
+            .sidebar { width: 80px; }
+            .logo-text, .nav-item span { display: none; }
+            .charts-grid { grid-template-columns: 1fr; }
+            .main-content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="logo-area">
+            <i class="fas fa-shield-halos shield-icon"></i>
+            <div class="logo-text"><h1>AI SHIELD X</h1><p>AI DEFENSE SYSTEM</p></div>
+        </div>
+        <div class="nav-menu">
+            <a href="/" class="nav-item"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+            <a href="/threat-monitor" class="nav-item"><i class="fas fa-eye"></i><span>Threat Monitor</span></a>
+            <a href="/attack-arena" class="nav-item"><i class="fas fa-gamepad"></i><span>Attack Arena</span></a>
+            <a href="/prompt-sandbox" class="nav-item"><i class="fas fa-terminal"></i><span>Prompt Sandbox</span></a>
+            <a href="/analytics" class="nav-item active"><i class="fas fa-chart-line"></i><span>Analytics</span></a>
+            <a href="/attack-replay" class="nav-item"><i class="fas fa-history"></i><span>Attack Replay</span></a>
+            <a href="/api-gateway" class="nav-item"><i class="fas fa-plug"></i><span>API Gateway</span></a>
+            <a href="/honeypot" class="nav-item"><i class="fas fa-jar"></i><span>Honeypot</span></a>
+        </div>
+    </aside>
+    
+    <main class="main-content">
+        <h2>Analytics Dashboard</h2>
+        <p>Comprehensive attack statistics and trends</p>
+        
+        <div class="stats-summary">
+            <div class="summary-card"><div>Total Attacks</div><div class="summary-value" id="total-attacks">0</div></div>
+            <div class="summary-card"><div>Block Rate</div><div class="summary-value" id="block-rate">98%</div></div>
+            <div class="summary-card"><div>Avg Response</div><div class="summary-value" id="avg-response">42ms</div></div>
+            <div class="summary-card"><div>Active Defenses</div><div class="summary-value">8</div></div>
+        </div>
+        
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-line"></i> Attacks Last 24 Hours</h3>
+                <canvas id="dailyChart" height="200"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-bar"></i> Weekly Trend</h3>
+                <canvas id="weeklyChart" height="200"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-pie"></i> Attack Types Distribution</h3>
+                <canvas id="attackTypeChart" height="200"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fas fa-globe"></i> Top Attack Origins</h3>
+                <canvas id="originsChart" height="200"></canvas>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    let dailyChart, weeklyChart, attackTypeChart, originsChart;
+    
+    async function loadAnalytics() {
+        const response = await fetch('/api/threat-stats');
+        const data = await response.json();
+        
+        const originsResponse = await fetch('/api/attack-origins');
+        const originsData = await originsResponse.json();
+        
+        updateCharts(data, originsData.origins);
+        updateStats();
+    }
+    
+    function updateCharts(threatData, origins) {
+        const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+        if (dailyChart) dailyChart.destroy();
+        dailyChart = new Chart(dailyCtx, {
+            type: 'line',
+            data: { labels: [...Array(24).keys()].map(h => `${h}:00`), datasets: [{ label: 'Attacks', data: threatData.daily, borderColor: '#4f46e5', backgroundColor: 'rgba(79,70,229,0.1)', fill: true }] }
+        });
+        
+        const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+        if (weeklyChart) weeklyChart.destroy();
+        weeklyChart = new Chart(weeklyCtx, {
+            type: 'bar',
+            data: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], datasets: [{ label: 'Attacks', data: threatData.weekly, backgroundColor: '#f97316' }] }
+        });
+        
+        const attackTypes = ['Prompt Injection', 'Jailbreak', 'Data Leak', 'DoS', 'Injection', 'Other'];
+        const attackData = [35, 28, 18, 12, 4, 3];
+        const typeCtx = document.getElementById('attackTypeChart').getContext('2d');
+        if (attackTypeChart) attackTypeChart.destroy();
+        attackTypeChart = new Chart(typeCtx, {
+            type: 'pie',
+            data: { labels: attackTypes, datasets: [{ data: attackData, backgroundColor: ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6'] }] }
+        });
+        
+        const originsCtx = document.getElementById('originsChart').getContext('2d');
+        if (originsChart) originsChart.destroy();
+        originsChart = new Chart(originsCtx, {
+            type: 'doughnut',
+            data: { labels: origins.map(o => o.country), datasets: [{ data: origins.map(o => o.percentage), backgroundColor: ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6', '#ec4899', '#6b7280'] }] }
+        });
+    }
+    
+    async function updateStats() {
+        const response = await fetch('/api/stats');
+        const stats = await response.json();
+        document.getElementById('total-attacks').innerText = stats.total_attacks_blocked?.toLocaleString() || 0;
+    }
+    
+    loadAnalytics();
+    setInterval(loadAnalytics, 10000);
+</script>
+</body>
+</html>
